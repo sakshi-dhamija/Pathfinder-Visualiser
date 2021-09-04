@@ -1,3 +1,11 @@
+
+Note: This is a visualiser tool for Pathfinding algorithms. Currently, it visualises Dijkstra's algorithm only. 
+Functioning: Green Node depicts the Start node, and red node depicts the end/goal node.
+Black boxes represent walls or obstacles, which can be made by dragging your cursor on the grid. 
+Click on 'Generate Dijkstra's algorithm' button to watch the visualisation. 
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
