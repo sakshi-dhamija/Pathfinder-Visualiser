@@ -2,7 +2,7 @@
 
 Hello everyone, this is a visualiser tool for Pathfinding algorithms. I built it beacuse I love getting my hands on algorithms and hope you enjoy playing with it too!
 
-The website is hosted here: 
+The website is hosted here: https://pathfinder--visualiser.herokuapp.com/
 
 <h2>Functioning</h2>
 
