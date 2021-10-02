@@ -71,8 +71,8 @@ export default class PathfindingVisualiser extends Component {
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
-  //We take the value of the option element when a button is clicked and then compare it with 
-  //the string values of all the algorithms we would implement. When an algorithm 
+  //We take the value of the select element when a button is clicked and then compare it with 
+  //the string values of all the algorithms we would implement. When an algorithm string
   //matches, its function (like this.visualizeDijkstra()) is called
   chooseAlgorithm(){
       const algorithm = document.getElementById("algos").value;
@@ -83,7 +83,7 @@ export default class PathfindingVisualiser extends Component {
         alert("Algorithm 2 hasn't been implemented yet");
       }
       else if(algorithm === "Algo3"){
-        alert("Algorithm 3 hasn't been implemented ye");
+        alert("Algorithm 3 hasn't been implemented yet");
       }
   }
 
