@@ -44,7 +44,8 @@ export default class PathfindingVisualiser extends Component {
 
 
   handleSpeedChange = (e) => {
-    this.setState({speed:e.target.value});
+    this.setState({speed:e.target.value})
+  };
 
   lockGrid(){
     this.setState({locked: true});
@@ -123,15 +124,48 @@ export default class PathfindingVisualiser extends Component {
       }
     }
   }
+  //We take the value of the option element when a button is clicked and then compare it with 
+  //the string values of all the algorithms we would implement. When an algorithm 
+  //matches, its function (like this.visualizeDijkstra()) is called
+    chooseAlgorithm(){
+      const algorithm = document.getElementById("algos").value;
+      if(algorithm === "Dijkstra"){
+        this.visualizeDijkstra();
+      }
+      else if(algorithm === "Algo2"){
+        alert("Algorithm 2 hasn't been implemented yet");
+      }
+      else if(algorithm === "Algo3"){
+        alert("Algorithm 3 hasn't been implemented yet");
+      }
+  }
+
 
   render() {
     const {grid, mouseIsPressed} = this.state;
 
     return (
       <>
-        <button onClick={() => this.visualizeDijkstra()}>
-          Visualize Dijkstra's Algorithm
-        </button>
+        {/* Dropdown menu to select algorithm*/}
+        <div className = "dropDown">
+          <select id="algos">
+            <option value="notAlgo">
+               Select an algorithm
+            </option>
+            <option value="Dijkstra">
+                Dijkstra Algorithm
+            </option>
+            <option value="Algo2">
+                Algorithm 2
+            </option>
+            <option value="Algo3">
+                Algorithm 3
+            </option>
+          </select>
+          <button onClick={() => this.chooseAlgorithm()}>
+                Visualize
+          </button>
+        </div>
 
         {/* Dropdown menu to select speed */}
         
