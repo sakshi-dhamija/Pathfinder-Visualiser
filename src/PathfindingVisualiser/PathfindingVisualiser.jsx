@@ -92,22 +92,23 @@ export default class PathfindingVisualiser extends Component {
 
     return (
       <>
-        <div className = "dropDown">
-          <label>Select an algorithm</label>
-          <select id="algos">
-            <option value="Dijkstra">
-                Dijkstra Algorithm
-            </option>
-            <option value="Algo2">
-                Algorithm 2
-            </option>
-            <option value="Algo3">
-                Algorithm 3
-            </option>
+      <button onClick={() => this.visualizeDijkstra()}>
+          Visualize Dijkstra's Algorithm
+        </button>
+
+        {/* Dropdown menu to select speed */}
+        
+        <div className="speed">
+          <label for="speed">Choose a Speed: </label>
+          <select 
+          name="speed"
+          value={this.state.speed} 
+          onChange={this.handleSpeedChange}
+          >
+            <option value="slow">Slow</option>
+            <option value="avg">Average</option>
+            <option value="fast">Fast</option>
           </select>
-          <button onClick={() => this.chooseAlgorithm()}>
-                Visualize
-          </button>
         </div>
         
         <div className="grid">

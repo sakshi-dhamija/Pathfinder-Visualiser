@@ -1,9 +1,6 @@
 .grid {
-  margin: 100px 0 0;
+  margin: 80px 0 0;
 }
-.dropDown {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  font-size: x-large;
+.speed {
+  margin-top: 20px;
 }
