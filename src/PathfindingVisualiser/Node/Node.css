@@ -6,11 +6,11 @@
   }
   
   .node-finish {
-    background-color: red;
+    background: no-repeat center/100% url("/src/Icons/nodeFinish.png");
   }
   
   .node-start {
-    background-color: green;
+    background: no-repeat center/90% url("/src/Icons/nodeStart.png");
   }
   
   .node-visited {
