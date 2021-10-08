@@ -14,6 +14,11 @@ export default class PathfindingVisualiser extends Component {
     this.state = {
       grid: [],
       mouseIsPressed: false,
+
+      speed: "avg",
+
+      locked: false
+
     };
   }
 
@@ -37,29 +42,57 @@ export default class PathfindingVisualiser extends Component {
     this.setState({mouseIsPressed: false});
   }
 
+
+  handleSpeedChange = (e) => {
+    this.setState({speed:e.target.value});
+
+  lockGrid(){
+    this.setState({locked: true});
+  }
+
+  unLockGrid(){
+    this.setState({locked: false});
+
+  }
+
   animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+    const {speed} = this.state;
+    var n = 10;
+    speed === 'avg' ? n=10 : speed === "fast" ? n=3 : n=25;
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
           this.animateShortestPath(nodesInShortestPathOrder);
-        }, 10 * i);
+        }, n * i);
         return;
       }
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          'node node-visited';
+
+        if (!node.isStart && !node.isFinish) {
+           document.getElementById(`node-${node.row}-${node.col}`).className =
+             'node node-visited';    
+        }
       }, 10 * i);
     }
   }
 
   animateShortestPath(nodesInShortestPathOrder) {
-    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+
+    const {speed} = this.state;
+    var n = 50;
+    speed === 'avg' ? n=50 : speed === "fast" ? n=25 : n=70;
+    
+    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {    
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          'node node-shortest-path';
+        if (!node.isStart && !node.isFinish) {
+           document.getElementById(`node-${node.row}-${node.col}`).className =
+             'node node-shortest-path';  
+        }
+        if(i === nodesInShortestPathOrder.length-1) this.unLockGrid(); // make it possible again to change, clear grid
       }, 50 * i);
+
     }
   }
 
@@ -67,24 +100,28 @@ export default class PathfindingVisualiser extends Component {
     const {grid} = this.state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    this.lockGrid(); // make it impossible to change in grid until finishing visualizing
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
-  //We take the value of the select element when a button is clicked and then compare it with 
-  //the string values of all the algorithms we would implement. When an algorithm string
-  //matches, its function (like this.visualizeDijkstra()) is called
-  chooseAlgorithm(){
-      const algorithm = document.getElementById("algos").value;
-      if(algorithm === "Dijkstra"){
-        this.visualizeDijkstra();
+
+  clearGrid(){
+    if (this.state.locked) return;
+    const {grid} = this.state;
+    for(let row=0;row<grid.length;row++){
+      for(let col=0;col<grid[row].length;col++){
+        if(row === START_NODE_ROW && col === START_NODE_COL){
+          document.getElementById(`node-${row}-${col}`).className ='node node-start';
+          continue;
+        }
+        if(row === FINISH_NODE_ROW && col === FINISH_NODE_COL){
+          document.getElementById(`node-${row}-${col}`).className ='node node-finish';
+          continue;
+        }
+        document.getElementById(`node-${row}-${col}`).className ='node';
       }
-      else if(algorithm === "Algo2"){
-        alert("Algorithm 2 hasn't been implemented yet");
-      }
-      else if(algorithm === "Algo3"){
-        alert("Algorithm 3 hasn't been implemented yet");
-      }
+    }
   }
 
   render() {
@@ -92,7 +129,7 @@ export default class PathfindingVisualiser extends Component {
 
     return (
       <>
-      <button onClick={() => this.visualizeDijkstra()}>
+        <button onClick={() => this.visualizeDijkstra()}>
           Visualize Dijkstra's Algorithm
         </button>
 
@@ -110,7 +147,11 @@ export default class PathfindingVisualiser extends Component {
             <option value="fast">Fast</option>
           </select>
         </div>
-        
+
+        <button disabled = {this.state.locked} onClick={() => this.clearGrid()}>
+          Clear Grid
+        </button>
+
         <div className="grid">
           {grid.map((row, rowIdx) => {
             return (
