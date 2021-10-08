@@ -14,6 +14,7 @@ export default class PathfindingVisualiser extends Component {
     this.state = {
       grid: [],
       mouseIsPressed: false,
+      locked: false,
     };
   }
 
@@ -37,6 +38,14 @@ export default class PathfindingVisualiser extends Component {
     this.setState({mouseIsPressed: false});
   }
 
+  lockGrid(){
+    this.setState({locked: true});
+  }
+
+  unLockGrid(){
+    this.setState({locked: false});
+  }
+
   animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
@@ -56,13 +65,14 @@ export default class PathfindingVisualiser extends Component {
   }
 
   animateShortestPath(nodesInShortestPathOrder) {
-    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {    
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
         if (!node.isStart && !node.isFinish) {
            document.getElementById(`node-${node.row}-${node.col}`).className =
              'node node-shortest-path';  
         }
+        if(i === nodesInShortestPathOrder.length-1) this.unLockGrid(); // make it possible again to change, clear grid
       }, 50 * i);
     }
   }
@@ -71,9 +81,28 @@ export default class PathfindingVisualiser extends Component {
     const {grid} = this.state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    this.lockGrid(); // make it impossible to change in grid until finishing visualizing
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+  }
+
+  clearGrid(){
+    if (this.state.locked) return;
+    const {grid} = this.state;
+    for(let row=0;row<grid.length;row++){
+      for(let col=0;col<grid[row].length;col++){
+        if(row === START_NODE_ROW && col === START_NODE_COL){
+          document.getElementById(`node-${row}-${col}`).className ='node node-start';
+          continue;
+        }
+        if(row === FINISH_NODE_ROW && col === FINISH_NODE_COL){
+          document.getElementById(`node-${row}-${col}`).className ='node node-finish';
+          continue;
+        }
+        document.getElementById(`node-${row}-${col}`).className ='node';
+      }
+    }
   }
 
   render() {
@@ -83,6 +112,9 @@ export default class PathfindingVisualiser extends Component {
       <>
         <button onClick={() => this.visualizeDijkstra()}>
           Visualize Dijkstra's Algorithm
+        </button>
+        <button disabled = {this.state.locked} onClick={() => this.clearGrid()}>
+          Clear Grid
         </button>
         <div className="grid">
           {grid.map((row, rowIdx) => {
