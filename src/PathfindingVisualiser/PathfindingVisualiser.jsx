@@ -14,7 +14,11 @@ export default class PathfindingVisualiser extends Component {
     this.state = {
       grid: [],
       mouseIsPressed: false,
-      speed: "avg"
+
+      speed: "avg",
+
+      locked: false
+
     };
   }
 
@@ -38,8 +42,17 @@ export default class PathfindingVisualiser extends Component {
     this.setState({mouseIsPressed: false});
   }
 
+
   handleSpeedChange = (e) => {
     this.setState({speed:e.target.value});
+
+  lockGrid(){
+    this.setState({locked: true});
+  }
+
+  unLockGrid(){
+    this.setState({locked: false});
+
   }
 
   animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
@@ -55,22 +68,31 @@ export default class PathfindingVisualiser extends Component {
       }
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          'node node-visited';
-      }, n * i);
+
+        if (!node.isStart && !node.isFinish) {
+           document.getElementById(`node-${node.row}-${node.col}`).className =
+             'node node-visited';    
+        }
+      }, 10 * i);
     }
   }
 
   animateShortestPath(nodesInShortestPathOrder) {
+
     const {speed} = this.state;
     var n = 50;
     speed === 'avg' ? n=50 : speed === "fast" ? n=25 : n=70;
-    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+    
+    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {    
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          'node node-shortest-path';
-      }, n * i);
+        if (!node.isStart && !node.isFinish) {
+           document.getElementById(`node-${node.row}-${node.col}`).className =
+             'node node-shortest-path';  
+        }
+        if(i === nodesInShortestPathOrder.length-1) this.unLockGrid(); // make it possible again to change, clear grid
+      }, 50 * i);
+
     }
   }
 
@@ -78,9 +100,28 @@ export default class PathfindingVisualiser extends Component {
     const {grid} = this.state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    this.lockGrid(); // make it impossible to change in grid until finishing visualizing
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+  }
+
+  clearGrid(){
+    if (this.state.locked) return;
+    const {grid} = this.state;
+    for(let row=0;row<grid.length;row++){
+      for(let col=0;col<grid[row].length;col++){
+        if(row === START_NODE_ROW && col === START_NODE_COL){
+          document.getElementById(`node-${row}-${col}`).className ='node node-start';
+          continue;
+        }
+        if(row === FINISH_NODE_ROW && col === FINISH_NODE_COL){
+          document.getElementById(`node-${row}-${col}`).className ='node node-finish';
+          continue;
+        }
+        document.getElementById(`node-${row}-${col}`).className ='node';
+      }
+    }
   }
 
   render() {
@@ -91,6 +132,7 @@ export default class PathfindingVisualiser extends Component {
         <button onClick={() => this.visualizeDijkstra()}>
           Visualize Dijkstra's Algorithm
         </button>
+
         {/* Dropdown menu to select speed */}
         
         <div className="speed">
@@ -105,6 +147,11 @@ export default class PathfindingVisualiser extends Component {
             <option value="fast">Fast</option>
           </select>
         </div>
+
+        <button disabled = {this.state.locked} onClick={() => this.clearGrid()}>
+          Clear Grid
+        </button>
+
         <div className="grid">
           {grid.map((row, rowIdx) => {
             return (
