@@ -14,7 +14,11 @@ export default class PathfindingVisualiser extends Component {
     this.state = {
       grid: [],
       mouseIsPressed: false,
-      locked: false,
+
+      speed: "avg",
+
+      locked: false
+
     };
   }
 
@@ -38,24 +42,33 @@ export default class PathfindingVisualiser extends Component {
     this.setState({mouseIsPressed: false});
   }
 
+
+  handleSpeedChange = (e) => {
+    this.setState({speed:e.target.value});
+
   lockGrid(){
     this.setState({locked: true});
   }
 
   unLockGrid(){
     this.setState({locked: false});
+
   }
 
   animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
+    const {speed} = this.state;
+    var n = 10;
+    speed === 'avg' ? n=10 : speed === "fast" ? n=3 : n=25;
     for (let i = 0; i <= visitedNodesInOrder.length; i++) {
       if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
           this.animateShortestPath(nodesInShortestPathOrder);
-        }, 10 * i);
+        }, n * i);
         return;
       }
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
+
         if (!node.isStart && !node.isFinish) {
            document.getElementById(`node-${node.row}-${node.col}`).className =
              'node node-visited';    
@@ -65,6 +78,11 @@ export default class PathfindingVisualiser extends Component {
   }
 
   animateShortestPath(nodesInShortestPathOrder) {
+
+    const {speed} = this.state;
+    var n = 50;
+    speed === 'avg' ? n=50 : speed === "fast" ? n=25 : n=70;
+    
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {    
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
@@ -74,6 +92,7 @@ export default class PathfindingVisualiser extends Component {
         }
         if(i === nodesInShortestPathOrder.length-1) this.unLockGrid(); // make it possible again to change, clear grid
       }, 50 * i);
+
     }
   }
 
@@ -113,9 +132,26 @@ export default class PathfindingVisualiser extends Component {
         <button onClick={() => this.visualizeDijkstra()}>
           Visualize Dijkstra's Algorithm
         </button>
+
+        {/* Dropdown menu to select speed */}
+        
+        <div className="speed">
+          <label for="speed">Choose a Speed: </label>
+          <select 
+          name="speed"
+          value={this.state.speed} 
+          onChange={this.handleSpeedChange}
+          >
+            <option value="slow">Slow</option>
+            <option value="avg">Average</option>
+            <option value="fast">Fast</option>
+          </select>
+        </div>
+
         <button disabled = {this.state.locked} onClick={() => this.clearGrid()}>
           Clear Grid
         </button>
+
         <div className="grid">
           {grid.map((row, rowIdx) => {
             return (
