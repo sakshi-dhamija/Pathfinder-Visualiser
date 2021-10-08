@@ -1,5 +1,7 @@
 # Pathfinder Visualiser
 
+<i>Note:   hey everyone I'll be unavailable for next 3-4 days, due to an upcoming and important exam and also due to my health reasons. I'll give back reviews and merge pr's on a priority basis after that. Please excuse me till then and thank you! </i>
+
 Hello everyone, this is a visualiser tool for Pathfinding algorithms. I built it beacuse I love getting my hands on algorithms and hope you enjoy playing with it too!
 
 The website is hosted here: https://pathfinder--visualiser.herokuapp.com/

@@ -56,8 +56,10 @@ export default class PathfindingVisualiser extends Component {
       }
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          'node node-visited';
+        if (!node.isStart && !node.isFinish) {
+           document.getElementById(`node-${node.row}-${node.col}`).className =
+             'node node-visited';    
+        }
       }, 10 * i);
     }
   }
@@ -66,8 +68,10 @@ export default class PathfindingVisualiser extends Component {
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {    
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          'node node-shortest-path';
+        if (!node.isStart && !node.isFinish) {
+           document.getElementById(`node-${node.row}-${node.col}`).className =
+             'node node-shortest-path';  
+        }
         if(i === nodesInShortestPathOrder.length-1) this.unLockGrid(); // make it possible again to change, clear grid
       }, 50 * i);
     }
