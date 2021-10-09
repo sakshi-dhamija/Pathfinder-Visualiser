@@ -45,16 +45,15 @@ export default class PathfindingVisualiser extends Component {
 
   handleSpeedChange = (e) => {
     this.setState({speed:e.target.value});
-
+  }
   lockGrid(){
     this.setState({locked: true});
-  }
+  };
 
   unLockGrid(){
     this.setState({locked: false});
-
   }
-
+  
   animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
     const {speed} = this.state;
     var n = 10;
